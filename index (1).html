@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>즐거운 3학년 7반 알림장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #F2E8D5;
+    --bg-deep: #E8DBC2;
+    --paper: #FFFBF2;
+    --ink: #4B3F35;
+    --muted: #8A7B6B;
+    --line: #E3D5BE;
+    --sage: #6E9A72;
+    --sage-dark: #557D5A;
+    --sage-soft: #DFEBD8;
+    --sage-ink: #3F6B47;
+    --butter: #E2B04A;
+    --butter-dark: #C4932E;
+    --butter-soft: #FAEBC4;
+    --butter-ink: #85601A;
+    --rose: #C46F68;
+    --rose-dark: #A3564F;
+    --rose-soft: #F6DFDA;
+    --stone-soft: #ECE3D5;
+    --stone-ink: #857868;
+    --shadow: 0 12px 30px -16px rgba(110, 80, 40, .32);
+    --r-lg: 32px;
+    --r-md: 22px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Gowun Dodum', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    word-break: keep-all;
+  }
+  h1, h2, h3, .jua { font-family: 'Jua', 'Gowun Dodum', sans-serif; font-weight: 400; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid #8DB38F; outline-offset: 2px; }
+
+  /* 배경의 부드러운 도형 */
+  .blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .blobs span { position: absolute; display: block; }
+  .b1 { width: 440px; height: 400px; background: #F5D8B8; top: -160px; left: -140px; opacity: .75;
+        border-radius: 58% 42% 63% 37% / 46% 55% 45% 54%; animation: drift 18s ease-in-out infinite alternate; }
+  .b2 { width: 380px; height: 360px; background: #D7E5CC; top: 140px; right: -170px; opacity: .8;
+        border-radius: 41% 59% 38% 62% / 57% 39% 61% 43%; animation: drift 22s ease-in-out infinite alternate-reverse; }
+  .b3 { width: 320px; height: 320px; background: #F4E3AE; bottom: -140px; left: 10%; opacity: .6;
+        border-radius: 63% 37% 54% 46% / 38% 58% 42% 62%; animation: drift 26s ease-in-out infinite alternate; }
+  @keyframes drift { to { transform: translate(24px, 18px) rotate(8deg); } }
+
+  .wrap { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 36px 18px 56px; }
+
+  /* 머리글 */
+  .hero { text-align: center; padding: 14px 8px 32px; }
+  .stamp { display: inline-flex; align-items: center; gap: 8px; background: var(--paper); border-radius: 999px;
+           padding: 6px 16px 6px 6px; font-size: 14px; color: var(--muted); box-shadow: var(--shadow); }
+  .hero h1 { font-size: clamp(30px, 6.4vw, 48px); line-height: 1.22; margin: 20px 0 0; letter-spacing: -0.01em; }
+
+  /* 구역 */
+  .section { background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--shadow);
+             padding: 22px 22px 20px; margin-bottom: 18px; }
+  .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+  .section h2 { display: flex; align-items: center; gap: 11px; font-size: 22px; line-height: 1.3; margin: 0; }
+  .sec-ico { width: 40px; height: 40px; flex: none; display: grid; place-items: center; font-size: 19px;
+             border-radius: 46% 54% 50% 50% / 55% 45% 55% 45%; }
+  .ico-butter { background: var(--butter-soft); }
+  .ico-sage { background: var(--sage-soft); }
+  .ico-rose { background: var(--rose-soft); }
+  .ico-stone { background: var(--stone-soft); }
+  .stars { margin-left: auto; color: var(--butter); font-size: 16px; letter-spacing: 1px; }
+
+  .content-box { white-space: pre-wrap; line-height: 1.7; color: var(--ink); }
+  #noticeContent { background: var(--bg); border-radius: 20px; padding: 14px 18px; min-height: 56px; }
+
+  /* 버튼 */
+  .action-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;
+                border: 0; border-radius: 999px; padding: 13px 18px; margin-top: 14px; font-size: 16px;
+                cursor: pointer; text-decoration: none; transition: transform .12s, background-color .2s, box-shadow .12s; }
+  .action-btn:active { transform: translateY(2px); }
+  .btn-blue { background: var(--sage); color: #fff; box-shadow: 0 3px 0 var(--sage-dark); }
+  .btn-blue:hover { background: #79A57D; }
+  .btn-blue:active { box-shadow: 0 1px 0 var(--sage-dark); }
+  .btn-orange { background: var(--butter); color: #4A3510; box-shadow: 0 3px 0 var(--butter-dark); }
+  .btn-orange:hover { background: #E8BA59; }
+  .btn-orange:active { box-shadow: 0 1px 0 var(--butter-dark); }
+  .close-btn { background: var(--bg); color: var(--muted); box-shadow: 0 3px 0 var(--line); }
+  .close-btn:hover { background: var(--bg-deep); }
+  .close-btn:active { box-shadow: 0 1px 0 var(--line); }
+  .action-btn[disabled] { cursor: not-allowed; transform: none; }
+  .btn-mini { flex: none; border: 0; border-radius: 999px; padding: 7px 14px; font-size: 14px; cursor: pointer;
+              background: var(--bg); color: var(--ink); box-shadow: 0 3px 0 var(--line); white-space: nowrap;
+              transition: transform .12s, background-color .2s, box-shadow .12s; }
+  .btn-mini:hover { background: var(--bg-deep); }
+  .btn-mini:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
+
+  /* 입력칸 */
+  input[type="text"], input[type="date"], textarea, select {
+    width: 100%; margin: 8px 0 0; padding: 12px 14px; border: 2px solid transparent; border-radius: 16px;
+    background: var(--bg); color: var(--ink); resize: vertical; -webkit-appearance: none; appearance: none; }
+  input[type="date"] { min-height: 50px; }
+  select { padding-right: 40px; cursor: pointer;
+           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5.5l4 4 4-4' fill='none' stroke='%238A7B6B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+           background-repeat: no-repeat; background-position: right 16px center; }
+  input[type="text"]:focus, input[type="date"]:focus, textarea:focus, select:focus { outline: none; border-color: #A9C7A5; background-color: #fff; }
+  input::placeholder, textarea::placeholder { color: #A89A89; }
+  input:disabled, textarea:disabled { opacity: .6; }
+  .sec-head + input { margin-top: 0; }
+  .detail-input { min-height: 120px; }
+  .range { display: flex; gap: 8px; align-items: center; }
+  .range span { color: var(--muted); padding-top: 8px; }
+
+  /* 목록 */
+  #homeworkContent.content-box, #attendanceContent.content-box { white-space: normal; line-height: 1.4; }
+  .homework-item, .attendance-item { background: var(--bg); border-radius: 18px; padding: 10px 12px 10px 14px; margin: 0 0 8px; }
+  .homework-item:last-child, .attendance-item:last-child { margin-bottom: 0; }
+  .homework-header, .attendance-main { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .homework-info, .attendance-info { display: flex; align-items: center; flex-wrap: wrap; gap: 3px 8px; min-width: 0; overflow-wrap: anywhere; }
+  .homework-dday { font-family: 'Jua', sans-serif; font-weight: 400; font-size: 13px; border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .dd-soon { background: var(--rose-soft); color: var(--rose-dark); }
+  .dd-later { background: var(--sage-soft); color: var(--sage-ink); }
+  .dd-past { background: var(--stone-soft); color: var(--stone-ink); }
+  .homework-title, .attendance-name { font-family: 'Jua', sans-serif; font-weight: 400; font-size: 17px; color: var(--ink); }
+  .homework-item.is-past .homework-title { color: var(--muted); }
+  .homework-date, .attendance-period { color: var(--muted); font-size: 14px; white-space: nowrap; }
+  .attendance-type { background: var(--butter-soft); color: var(--butter-ink); border-radius: 999px; padding: 2px 10px; font-size: 13px; white-space: nowrap; }
+  .homework-description, .attendance-reason { margin-top: 4px; color: var(--muted); font-size: 15px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .leading-note { white-space: pre-wrap; line-height: 1.5; color: var(--muted); padding: 4px 2px; }
+  .leading-rule { border: 0; border-top: 1.5px dashed var(--line); margin: 10px 0; }
+  .empty-message { color: var(--muted); background: var(--bg); border-radius: 18px; padding: 14px 16px; text-align: center; }
+
+  .item-actions { display: flex; align-items: center; gap: 4px; flex: none; }
+  .btn-edit, .btn-delete { border: 0; border-radius: 999px; padding: 4px 11px; font-size: 13px; line-height: 1.4;
+                           cursor: pointer; background: var(--paper); transition: background-color .15s; }
+  .btn-edit { color: var(--muted); }
+  .btn-delete { color: var(--rose-dark); }
+  .btn-edit:hover, .btn-delete:hover { background: #fff; }
+
+  /* 팝업 (버튼을 눌렀을 때만 뜸) */
+  .modal-overlay { display: none; position: fixed; inset: 0; z-index: 1000; overflow-y: auto; padding: 20px 14px;
+                   background: rgba(75, 63, 53, .32); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+                   animation: fade .18s ease; }
+  .modal-content { background: var(--paper); max-width: 440px; margin: 5vh auto; padding: 28px 24px 24px;
+                   border-radius: 30px; box-shadow: 0 24px 50px -24px rgba(75, 55, 30, .5);
+                   animation: pop .24s cubic-bezier(.2, .9, .3, 1.15); }
+  .modal-content h2 { font-size: 25px; text-align: center; margin: 0 0 4px; line-height: 1.3; }
+  .modal-sub { text-align: center; color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+  .field-label { display: block; margin-top: 16px; font-size: 14px; color: var(--muted); }
+  .field-hint { font-size: 13px; color: var(--butter-ink); background: var(--butter-soft); border-radius: 14px; padding: 8px 12px; margin-top: 10px; line-height: 1.5; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 22px; }
+  .modal-actions .action-btn { margin-top: 0; }
+  .modal-actions .close-btn { flex: 0 0 34%; }
+  @keyframes fade { from { opacity: 0; } }
+  @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.97); } }
+
+  .radio-group { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .radio-group label { flex: 1; position: relative; }
+  .radio-group input { position: absolute; opacity: 0; pointer-events: none; }
+  .radio-group span { display: block; text-align: center; padding: 10px 6px; border-radius: 14px; background: var(--bg);
+                      cursor: pointer; min-width: 68px; transition: background-color .15s; }
+  .radio-group input:checked + span { background: var(--ink); color: var(--paper); }
+  .radio-group input:focus-visible + span { outline: 3px solid #8DB38F; outline-offset: 2px; }
+
+  .file-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .file-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px 10px 10px; border-radius: 18px;
+              background: var(--bg); color: var(--ink); text-decoration: none; transition: background-color .15s; }
+  .file-row:hover { background: var(--bg-deep); }
+  .file-ico { width: 38px; height: 38px; flex: none; display: grid; place-items: center; border-radius: 12px;
+              background: var(--rose-soft); color: var(--rose-dark); font-family: 'Jua', sans-serif; font-size: 12px; }
+  .file-name { flex: 1; font-size: 16px; }
+  .file-get { font-size: 13px; color: var(--sage-ink); background: var(--sage-soft); border-radius: 999px; padding: 3px 11px; }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 36px; }
+
+  @media (max-width: 520px) {
+    .wrap { padding: 26px 14px 48px; }
+    .section { padding: 20px 16px 18px; border-radius: 28px; }
+    .section h2 { font-size: 20px; }
+    .sec-ico { width: 36px; height: 36px; font-size: 17px; }
+    .modal-content { padding: 26px 18px 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+<style id="ctabs-style">
+  /* ===== 크롬 탭처럼 생긴 페이지 이동 줄 (알림장 · 의견 수합 공통) ===== */
+  .ctabs { position: sticky; top: 0; z-index: 40; overflow-x: clip; background: #E2D2B4;
+           font-family: 'Gowun Dodum', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+  .ctabs::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 18px; pointer-events: none;
+                  background: linear-gradient(#F2E8D5, rgba(242, 232, 213, 0)); }
+  .ctabs-row { display: flex; align-items: flex-end; gap: 6px; padding: 8px 18px 0; }
+  .ctab { position: relative; display: flex; align-items: center; gap: 9px; flex: 0 1 216px; min-width: 0;
+          height: 40px; padding: 0 16px 0 13px; border-radius: 14px 14px 0 0; color: #7A6955;
+          text-decoration: none; font-size: 15px; line-height: 1; white-space: nowrap;
+          transition: background-color .15s, color .15s; }
+  .ctab:not(.is-active):hover { background: rgba(255, 251, 242, .5); color: #4B3F35; }
+  .ctab.is-active { z-index: 1; background: #F2E8D5; color: #4B3F35; cursor: default; }
+  .ctab.is-active::before, .ctab.is-active::after { content: ''; position: absolute; bottom: 0; width: 14px; height: 14px; pointer-events: none; }
+  .ctab.is-active::before { left: -14px; background: radial-gradient(circle at 0 0, transparent 13.5px, #F2E8D5 14px); }
+  .ctab.is-active::after { right: -14px; background: radial-gradient(circle at 100% 0, transparent 13.5px, #F2E8D5 14px); }
+  .ctab-ico { width: 20px; height: 20px; flex: none; display: block; }
+  .ctab-label { overflow: hidden; text-overflow: ellipsis; padding: 2px 0; }
+  .ctab:focus-visible { outline: 3px solid #8DB38F; outline-offset: -3px; }
+  .ctabs-floor { height: 8px; background: #F2E8D5; }
+  @media (max-width: 520px) {
+    .ctabs-row { padding: 8px 14px 0; gap: 4px; }
+    .ctab { font-size: 14px; padding: 0 12px 0 10px; gap: 7px; }
+  }
+</style>
+</head>
+<body>
+<nav class="ctabs" id="ctabs" aria-label="페이지 이동">
+  <div class="ctabs-row">
+    <a class="ctab is-active" data-tab="notice" aria-current="page">
+      <svg class="ctab-ico" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#FAEBC4"/><rect x="7.5" y="6.5" width="11" height="13" rx="2.6" fill="none" stroke="#85601A" stroke-width="1.6"/><path d="M10.4 10.6h5.2M10.4 13.2h5.2M10.4 15.8h3.2" stroke="#85601A" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span class="ctab-label">알림장</span>
+    </a>
+    <a class="ctab" data-tab="survey" href="survey.html">
+      <svg class="ctab-ico" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#DFEBD8"/><rect x="6.5" y="8.5" width="13" height="9.5" rx="2.5" fill="none" stroke="#3F6B47" stroke-width="1.6"/><path d="M7.6 10.2l5.4 3.9 5.4-3.9" fill="none" stroke="#3F6B47" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="ctab-label">학부모 의견 수합</span>
+    </a>
+  </div>
+  <div class="ctabs-floor"></div>
+</nav>
+
+<div class="blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="stamp">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="13" fill="#FAEBC4"/><rect x="7" y="7.5" width="12" height="11" rx="2.6" fill="none" stroke="#85601A" stroke-width="1.6"/><path d="M7 11.2h12M10.2 5.8v3M15.8 5.8v3" stroke="#85601A" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span id="todayDate">날짜 불러오는 중...</span>
+    </span>
+    <h1>즐거운 3학년 7반<br>알림장</h1>
+  </header>
+
+  <section class="section">
+    <div class="sec-head"><h2><span class="sec-ico ico-butter" aria-hidden="true">📢</span>전달사항</h2></div>
+    <div id="noticeContent" class="content-box">불러오는 중...</div>
+    <button class="action-btn btn-blue" onclick="openTeacherModal()">전달사항 추가하기</button>
+  </section>
+
+  <section class="section">
+    <div class="sec-head">
+      <h2><span class="sec-ico ico-sage" aria-hidden="true">📋</span>출결서류 안내</h2>
+      <button class="btn-mini" onclick="openDownloadModal()">서류 다운로드</button>
+    </div>
+    <div id="attendanceContent" class="content-box">불러오는 중...</div>
+    <button class="action-btn btn-blue" onclick="openAttendanceWithPassword()">출결 서류 추가</button>
+  </section>
+
+  <section class="section">
+    <div class="sec-head"><h2><span class="sec-ico ico-rose" aria-hidden="true">✍️</span>수행평가 · 숙제 · 고사 · 행사</h2></div>
+    <div id="homeworkContent" class="content-box">불러오는 중...</div>
+    <button class="action-btn btn-blue" onclick="openHwModal()">평가/숙제/고사/행사 추가하기</button>
+  </section>
+
+  <section class="section">
+    <div class="sec-head"><h2><span class="sec-ico ico-stone" aria-hidden="true">🤫</span>익명 건의함</h2><span id="pendingSuggestionStars" class="stars"></span></div>
+    <input type="text" id="suggestionName" placeholder="👤 이름 (안 적으면 익명으로 쉿!)">
+    <textarea id="suggestionContent" rows="3" placeholder="💬 건의할 내용을 자유롭게 적어주세요"></textarea>
+    <button id="suggestionBtn" class="action-btn btn-orange" onclick="sendSuggestion()">선생님께 보내기</button>
+  </section>
+
+  <footer>목운중학교 3학년 7반</footer>
+</div>
+
+<!-- 서류 다운로드 -->
+<div id="downloadModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2>서류 다운로드</h2>
+    <p class="modal-sub">필요한 양식을 눌러 내려받으세요.</p>
+    <div class="file-list">
+      <a class="file-row" href="출결신고서.pdf" download><span class="file-ico">PDF</span><span class="file-name">출결신고서</span><span class="file-get">받기</span></a>
+      <a class="file-row" href="체험학습 신청서.pdf" download><span class="file-ico">PDF</span><span class="file-name">체험학습 신청서</span><span class="file-get">받기</span></a>
+      <a class="file-row" href="체험학습 보고서.pdf" download><span class="file-ico">PDF</span><span class="file-name">체험학습 보고서</span><span class="file-get">받기</span></a>
+    </div>
+    <button class="action-btn close-btn" onclick="closeDownloadModal()">닫기</button>
+  </div>
+</div>
+
+<!-- 평가/숙제/고사/행사 -->
+<div id="hwModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2>평가/숙제/고사/행사 추가</h2>
+    <input type="hidden" id="hwEditLine"><input type="hidden" id="hwEditIndex"><input type="hidden" id="hwEditDate">
+    <span class="field-label">종류</span>
+    <div class="radio-group">
+      <label><input type="radio" name="hwType" value="수행평가" checked><span>수행평가</span></label>
+      <label><input type="radio" name="hwType" value="숙제"><span>숙제</span></label>
+      <label><input type="radio" name="hwType" value="고사"><span>고사</span></label>
+      <label><input type="radio" name="hwType" value="행사"><span>행사</span></label>
+    </div>
+    <label class="field-label" for="hwSubject">과목명</label>
+    <input type="text" id="hwSubject" placeholder="예: 수학, 국어">
+    <label class="field-label" for="hwDate">제출/평가 날짜</label>
+    <input type="date" id="hwDate">
+    <label class="field-label" for="hwDesc">세부 내용 (선택)</label>
+    <textarea id="hwDesc" class="detail-input" rows="6" placeholder="예: 교과서 50쪽 풀이
+여러 줄로 자세히 입력할 수 있습니다."></textarea>
+    <div class="modal-actions">
+      <button class="action-btn close-btn" onclick="closeHwModal()">취소</button>
+      <button class="action-btn btn-blue" onclick="submitHw()">완료</button>
+    </div>
+  </div>
+</div>
+
+<!-- 출결 서류 -->
+<div id="attendanceModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2>출결 서류</h2>
+    <input type="hidden" id="attendanceEditId">
+    <label class="field-label" for="attendanceName">이름</label>
+    <input type="text" id="attendanceName" placeholder="이름을 입력하세요">
+    <span class="field-label">기간</span>
+    <div class="range"><input type="date" id="attendanceStartDate" aria-label="시작일"><span>~</span><input type="date" id="attendanceEndDate" aria-label="종료일"></div>
+    <label class="field-label" for="attendanceType">결석 종류</label>
+    <select id="attendanceType"><option value="인정결석">인정결석</option><option value="질병결석">질병결석</option><option value="인정조퇴">인정조퇴</option><option value="인정지각">인정지각</option><option value="인정결과">인정결과</option></select>
+    <label class="field-label" for="attendanceReason">이유</label>
+    <textarea id="attendanceReason" rows="3" placeholder="이유를 입력하세요"></textarea>
+    <div class="modal-actions">
+      <button class="action-btn close-btn" onclick="closeAttendanceModal()">취소</button>
+      <button class="action-btn btn-blue" onclick="submitAttendance()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 전달사항 작성 -->
+<div id="teacherModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2>전달사항 작성</h2>
+    <span class="field-label">기간</span>
+    <div class="range"><input type="date" id="tStartDate" aria-label="시작일"><span>~</span><input type="date" id="tEndDate" aria-label="종료일"></div>
+    <div class="field-hint">선택한 기간의 모든 날짜에 같은 전달사항이 저장됩니다. 하루만 저장하려면 두 날짜를 같게 선택하세요.</div>
+    <label class="field-label" for="tNotice">전달사항</label>
+    <textarea id="tNotice" rows="5"></textarea>
+    <div class="modal-actions">
+      <button class="action-btn close-btn" onclick="closeTeacherModal()">닫기</button>
+      <button class="action-btn btn-blue" id="tSaveBtn" onclick="saveTeacherNotice()">저장하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyE5JWHKIXY8SCf9wnV_dwTMkjmmt8QygKLuDdbkeQ7h_DseimR--IN6GhfQH-fLOvIAg/exec";
+window.currentRawNotice = ""; window.currentRawAttendance = ""; window.currentRawHomework = ""; window.currentAttendanceDocuments = [];
+const today = new Date(); const todayStr = today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,'0')+"-"+String(today.getDate()).padStart(2,'0');
+document.getElementById('todayDate').innerText = `${today.getFullYear()}년 ${today.getMonth()+1}월 ${today.getDate()}일 ${'일월화수목금토'.charAt(today.getDay())}요일`;
+window.onload = () => { fetchNotice(); fetchSuggestionCount(); setInterval(fetchSuggestionCount, 30000); };
+function esc(value) { const d=document.createElement('div'); d.textContent=value==null?'':String(value); return d.innerHTML; }
+function fetchNotice() { const date=todayStr; ['noticeContent','attendanceContent','homeworkContent'].forEach(id=>document.getElementById(id).innerText='불러오는 중... ⏳'); fetch(GAS_URL+'?action=getNotice&date='+encodeURIComponent(date)).then(res=>res.json()).then(data=>{ window.currentRawNotice=data.notice||''; window.currentRawAttendance=data.attendance||''; window.currentRawHomework=data.homework||''; window.currentAttendanceDocuments=data.attendanceDocuments||[]; document.getElementById('noticeContent').innerText=window.currentRawNotice||'입력된 전달사항이 없습니다. 😊'; renderAttendanceDocuments(); renderHomework(); }).catch(()=>{ ['noticeContent','attendanceContent','homeworkContent'].forEach(id=>document.getElementById(id).innerText='데이터를 불러오지 못했습니다.'); }); }
+function fetchSuggestionCount() { fetch(GAS_URL+'?action=getSuggestionCount').then(res=>res.json()).then(data=>{ const box=document.getElementById('pendingSuggestionStars'); const count=Number(data.uncheckedCount)||0; box.textContent=count?' '+'★'.repeat(count):''; box.title=count?'처리하지 않은 건의사항 '+count+'개':''; }).catch(()=>{}); }
+function formatDisplayDate(value) {
+  const text = String(value || '').trim();
+  const match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (match) return Number(match[2]) + '월 ' + Number(match[3]) + '일';
+  const parsed = new Date(text);
+  if (!isNaN(parsed.getTime())) return (parsed.getMonth() + 1) + '월 ' + parsed.getDate() + '일';
+  return text;
+}
+function formatPeriod(start, end) {
+  const startText = formatDisplayDate(start);
+  const endText = formatDisplayDate(end);
+  return startText === endText ? startText : startText + ' ~ ' + endText;
+}
+function renderAttendanceDocuments() {
+  const box = document.getElementById('attendanceContent');
+  const documents = [...window.currentAttendanceDocuments].sort((a, b) => {
+    const byStart = String(a.startDate || '').localeCompare(String(b.startDate || ''));
+    return byStart || String(a.endDate || '').localeCompare(String(b.endDate || ''));
+  });
+  window.attItems = documents;
+  if (!documents.length) {
+    box.innerHTML = '<div class="empty-message">입력된 출결 서류가 없습니다.</div>';
+    return;
+  }
+  // 줄바꿈/들여쓰기 없이 한 줄 문자열로 조립한다(빈 줄 방지).
+  let html = '';
+  documents.forEach((item, idx) => {
+    html += '<div class="attendance-item">';
+    html += '<div class="attendance-main">';
+    html += '<span class="attendance-info">';
+    html += '<span class="attendance-name">' + esc(item.name) + '</span>';
+    html += '<span class="attendance-period">' + esc(formatPeriod(item.startDate, item.endDate)) + '</span>';
+    if (String(item.absenceType || '').trim()) {
+      html += '<span class="attendance-type">' + esc(String(item.absenceType).trim()) + '</span>';
+    }
+    html += '</span>';
+    html += '<span class="item-actions">';
+    html += '<button class="btn-edit" onclick="editAttendanceByIndex(' + idx + ')">수정</button>';
+    html += '<button class="btn-delete" onclick="deleteAttendanceByIndex(' + idx + ')">삭제</button>';
+    html += '</span>';
+    html += '</div>';
+    if (String(item.reason || '').trim()) {
+      html += '<div class="attendance-reason">' + esc(String(item.reason).trim()) + '</div>';
+    }
+    html += '</div>';
+  });
+  box.innerHTML = html;
+}
+function editAttendanceByIndex(index) { const item = (window.attItems || [])[index]; if (!item) return; if (!checkTeacherPassword()) return; openAttendanceModal(item); }
+function deleteAttendanceByIndex(index) { const item = (window.attItems || [])[index]; if (item) deleteAttendance(item.id); }
+
+// 'YYYY-MM-DD | 종류 | 과목 | 내용' 형식의 줄을 찾고,
+// 그 다음 형식 줄이 나오기 전까지의 모든 줄을 같은 항목의 세부 내용으로 이어 붙인다.
+function parseHomeworkRaw(raw) {
+  const lines = String(raw || '').replace(/\r\n/g, '\n').split('\n');
+  const items = [];
+  const leading = [];
+  lines.forEach((line, idx) => {
+    const m = line.match(/^\s*(\d{4}-\d{2}-\d{2})\s*\|\s*([^|]*)\|\s*([^|]*?)\s*(?:\|([\s\S]*))?$/);
+    if (m) {
+      items.push({
+        index: items.length,
+        date: m[1],
+        type: (m[2] || '').trim(),
+        subject: (m[3] || '').trim(),
+        desc: (m[4] || '').replace(/^[ \t]+/, ''),
+        start: idx,
+        end: idx
+      });
+    } else if (items.length) {
+      const last = items[items.length - 1];
+      last.desc = last.desc ? last.desc + '\n' + line : line;
+      last.end = idx;
+    } else if (line.trim()) {
+      leading.push(line);
+    }
+  });
+  items.forEach(item => {
+    item.desc = item.desc.replace(/\s+$/, '');
+    while (item.end > item.start && !lines[item.end].trim()) item.end--;
+    item.raw = lines.slice(item.start, item.end + 1).join('\n');
+  });
+  return { items: items, leading: leading };
+}
+function renderHomework() {
+  const box = document.getElementById('homeworkContent');
+  if (!String(window.currentRawHomework || '').trim()) {
+    box.innerHTML = '<div class="empty-message">입력된 평가/숙제/고사가 없습니다. 🎉</div>';
+    return;
+  }
+  const parsedData = parseHomeworkRaw(window.currentRawHomework);
+  window.hwItems = parsedData.items;
+
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+  const todayTime = currentDate.getTime();
+
+  const sorted = parsedData.items.slice().sort((a, b) => {
+    const at = new Date(a.date + 'T00:00:00').getTime();
+    const bt = new Date(b.date + 'T00:00:00').getTime();
+    const ap = at < todayTime;
+    const bp = bt < todayTime;
+    if (ap !== bp) return ap ? 1 : -1;
+    if (!ap) return at - bt;
+    return bt - at;
+  });
+
+  let html = '';
+  sorted.forEach(item => {
+    const targetDate = new Date(item.date + 'T00:00:00');
+    const diff = Math.ceil((targetDate - currentDate) / 86400000);
+    const dText = diff > 0 ? ('D-' + diff) : (diff === 0 ? 'D-Day' : ('D+' + Math.abs(diff)));
+    const dClass = diff < 0 ? 'dd-past' : (diff <= 3 ? 'dd-soon' : 'dd-later');
+    const dateText = (targetDate.getMonth() + 1) + '월 ' + targetDate.getDate() + '일 (' + '일월화수목금토'.charAt(targetDate.getDay()) + ')';
+    const desc = String(item.desc || '').trim();
+
+    html += '<div class="homework-item' + (diff < 0 ? ' is-past' : '') + '">';
+    html += '<div class="homework-header">';
+    html += '<div class="homework-info">';
+    html += '<span class="homework-dday ' + dClass + '">' + dText + '</span>';
+    html += '<strong class="homework-title">' + esc(item.subject) + ' ' + esc(item.type) + '</strong>';
+    html += '<span class="homework-date">' + dateText + '</span>';
+    html += '</div>';
+    html += '<span class="item-actions">';
+    html += '<button class="btn-edit" onclick="editHomeworkByIndex(' + item.index + ')">수정</button>';
+    html += '<button class="btn-delete" onclick="deleteHomeworkByIndex(' + item.index + ')">삭제</button>';
+    html += '</span>';
+    html += '</div>';
+    if (desc) html += '<div class="homework-description">✔️ ' + esc(desc) + '</div>';
+    html += '</div>';
+  });
+
+  if (parsedData.leading.length) {
+    html += (html ? '<hr class="leading-rule">' : '') +
+      '<div class="leading-note">' + esc(parsedData.leading.join('\n')) + '</div>';
+  }
+  box.innerHTML = html;
+}
+
+function postDataToGAS(dataObj,successMsg,afterRequest) { fetch(GAS_URL,{method:'POST',body:JSON.stringify(dataObj)}).then(res=>res.json()).then(res=>{if(res.status==='success'){alert('✅ '+successMsg);if(afterRequest)afterRequest();if(['saveNotice','addHomework','updateHomework','deleteHomework','addAttendance','updateAttendance','deleteAttendance'].includes(dataObj.action))fetchNotice();}else alert('❌ '+(res.message||'저장 실패'));}).catch(()=>{alert('✅ 저장이 요청되었습니다. 잠시 후 새로고침해 주세요.');setTimeout(()=>{if(afterRequest)afterRequest();fetchNotice();},1000);}); }
+function openDownloadModal(){document.getElementById('downloadModal').style.display='block';} function closeDownloadModal(){document.getElementById('downloadModal').style.display='none';}
+function postJSON(payload) {
+  return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) })
+    .then(res => res.json())
+    .catch(() => ({ status: 'unreachable' }));
+}
+function homeworkLinesArray() { return String(window.currentRawHomework || '').replace(/\r\n/g, '\n').split('\n'); }
+function homeworkTextWithout(item) {
+  const lines = homeworkLinesArray();
+  lines.splice(item.start, item.end - item.start + 1);
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+function homeworkTextReplaced(item, newBlock) {
+  const lines = homeworkLinesArray();
+  lines.splice(item.start, item.end - item.start + 1, newBlock);
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+// 1순위: Code.gs의 블록 단위 처리(모든 날짜 행에 반영)
+// 2순위: Code.gs가 아직 옛 버전이면 현재 보고 있는 날짜의 칸을 통째로 다시 써서 반드시 반영되게 한다.
+function applyHomeworkChange(primaryPayload, fallbackText, successMsg, afterRequest) {
+  function finish() {
+    alert('✅ ' + successMsg);
+    if (afterRequest) afterRequest();
+    fetchNotice();
+  }
+  postJSON(primaryPayload).then(res => {
+    const ok = res && res.status === 'success' && Number(res.changed === undefined ? 1 : res.changed) > 0;
+    if (ok) { finish(); return; }
+    return postJSON({
+      action: 'saveNotice',
+      date: todayStr,
+      notice: window.currentRawNotice || '',
+      attendance: window.currentRawAttendance || '',
+      homework: fallbackText
+    }).then(finish);
+  });
+}
+function openHwModal(){document.getElementById('hwEditIndex').value='';document.getElementById('hwEditLine').value='';document.getElementById('hwEditDate').value='';document.getElementById('hwSubject').value='';document.getElementById('hwDate').value='';document.getElementById('hwDesc').value='';document.querySelector('input[name="hwType"][value="수행평가"]').checked=true;document.getElementById('hwModal').style.display='block';}
+function closeHwModal(){document.getElementById('hwModal').style.display='none';}
+function submitHw() {
+  const type = document.querySelector('input[name="hwType"]:checked').value;
+  const subject = document.getElementById('hwSubject').value.trim();
+  const date = document.getElementById('hwDate').value;
+  const desc = document.getElementById('hwDesc').value.replace(/\r\n/g, '\n').replace(/\s+$/, '');
+  if (!subject || !date) { alert('과목명과 날짜를 꼭 입력해주세요.'); return; }
+  const newBlock = date + ' | ' + type + ' | ' + subject + ' | ' + desc;
+  const indexText = document.getElementById('hwEditIndex').value;
+  if (indexText === '') {
+    postDataToGAS({ action: 'addHomework', startDate: todayStr, endDate: date, homeworkLine: newBlock }, '평가/숙제/고사/행사가 등록되었습니다!', closeHwModal);
+    return;
+  }
+  const item = (window.hwItems || [])[Number(indexText)];
+  if (!item) { alert('수정할 항목을 찾지 못했습니다. 새로고침 후 다시 시도해주세요.'); return; }
+  applyHomeworkChange(
+    { action: 'updateHomeworkBlock', oldBlock: item.raw, newBlock: newBlock, date: item.date },
+    homeworkTextReplaced(item, newBlock),
+    '평가/숙제/고사/행사가 수정되었습니다!',
+    closeHwModal
+  );
+}
+function editHomeworkByIndex(index) {
+  const item = (window.hwItems || [])[index];
+  if (!item) { alert('수정할 항목을 찾지 못했습니다.'); return; }
+  document.getElementById('hwEditIndex').value = String(index);
+  document.getElementById('hwEditLine').value = item.raw;
+  document.getElementById('hwEditDate').value = item.date;
+  document.getElementById('hwDate').value = item.date;
+  document.getElementById('hwSubject').value = item.subject;
+  document.getElementById('hwDesc').value = item.desc;
+  const radios = document.querySelectorAll('input[name="hwType"]');
+  radios.forEach(radio => { radio.checked = (radio.value === item.type); });
+  if (!document.querySelector('input[name="hwType"]:checked')) {
+    document.querySelector('input[name="hwType"][value="수행평가"]').checked = true;
+  }
+  document.getElementById('hwModal').style.display = 'block';
+}
+function deleteHomeworkByIndex(index) {
+  const item = (window.hwItems || [])[index];
+  if (!item) { alert('삭제할 항목을 찾지 못했습니다.'); return; }
+  if (!confirm('이 수행평가/숙제/고사/행사를 삭제하시겠습니까?')) return;
+  applyHomeworkChange(
+    { action: 'deleteHomeworkBlock', block: item.raw, date: item.date },
+    homeworkTextWithout(item),
+    '삭제되었습니다.'
+  );
+}
+function openAttendanceModal(item){document.getElementById('attendanceEditId').value=item?item.id:'';document.getElementById('attendanceName').value=item?item.name:'';document.getElementById('attendanceStartDate').value=item?item.startDate:todayStr;document.getElementById('attendanceEndDate').value=item?item.endDate:todayStr;document.getElementById('attendanceType').value=item?item.absenceType:'결석';document.getElementById('attendanceReason').value=item?item.reason:'';document.getElementById('attendanceModal').style.display='block';} function checkTeacherPassword(){const pw=prompt('선생님 비밀번호를 입력하세요. 🔑');if(pw===null)return false;if(pw!=='7755'){alert('비밀번호가 틀렸습니다.');return false;}return true;}
+function openAttendanceWithPassword(){if(!checkTeacherPassword())return;openAttendanceModal();}
+function closeAttendanceModal(){document.getElementById('attendanceModal').style.display='none';}
+function submitAttendance(){const id=document.getElementById('attendanceEditId').value,name=document.getElementById('attendanceName').value.trim(),startDate=document.getElementById('attendanceStartDate').value,endDate=document.getElementById('attendanceEndDate').value,absenceType=document.getElementById('attendanceType').value,reason=document.getElementById('attendanceReason').value.trim();if(!name||!startDate||!endDate||!reason){alert('이름, 기간, 결석 종류, 이유를 모두 입력해주세요.');return;}if(endDate<startDate){alert('종료일은 시작일보다 빠를 수 없습니다.');return;}postDataToGAS({action:id?'updateAttendance':'addAttendance',id:id,name:name,startDate:startDate,endDate:endDate,absenceType:absenceType,reason:reason},id?'출결 서류가 수정되었습니다.':'출결 서류가 등록되었습니다.',closeAttendanceModal);}
+function editAttendance(id){const item=window.currentAttendanceDocuments.find(x=>String(x.id)===String(id));if(!item)return;if(!checkTeacherPassword())return;openAttendanceModal(item);} function deleteAttendance(id){if(!checkTeacherPassword())return;if(!confirm('이 출결 서류를 삭제하시겠습니까?'))return;postDataToGAS({action:'deleteAttendance',id:id},'출결 서류가 삭제되었습니다.');}
+// ===== 익명 건의함: 중복 제출 방지 =====
+let isSendingSuggestion = false;
+const SUGGESTION_COOLDOWN_MS = 30000; // 같은 내용 재제출 방지 시간(30초)
+function setSuggestionSending(sending){
+  const btn=document.getElementById('suggestionBtn');
+  const nameEl=document.getElementById('suggestionName');
+  const contentEl=document.getElementById('suggestionContent');
+  if(!btn.dataset.originalText) btn.dataset.originalText=btn.innerHTML;
+  btn.disabled=sending; nameEl.disabled=sending; contentEl.disabled=sending;
+  btn.innerHTML=sending?'⏳ 제출 중... 잠시만 기다려 주세요':btn.dataset.originalText;
+  btn.style.opacity=sending?'0.6':''; btn.style.cursor=sending?'not-allowed':'';
+}
+function sendSuggestion(){
+  if(isSendingSuggestion) return; // 전송 중이면 추가 클릭 무시
+  const name=document.getElementById('suggestionName').value.trim()||'익명';
+  const content=document.getElementById('suggestionContent').value.trim();
+  if(!content){alert('내용을 입력해주세요.');return;}
+  // 방금 보낸 것과 같은 내용이면 차단
+  try{
+    const last=JSON.parse(localStorage.getItem('lastSuggestion')||'null');
+    if(last&&last.content===content&&Date.now()-last.time<SUGGESTION_COOLDOWN_MS){
+      alert('방금 같은 내용을 이미 보냈어요. 선생님께 잘 전달되었습니다!');return;
+    }
+  }catch(e){}
+  isSendingSuggestion=true; setSuggestionSending(true);
+  const finishOk=(msg)=>{
+    try{localStorage.setItem('lastSuggestion',JSON.stringify({content:content,time:Date.now()}));}catch(e){}
+    document.getElementById('suggestionName').value='';
+    document.getElementById('suggestionContent').value='';
+    isSendingSuggestion=false; setSuggestionSending(false);
+    alert(msg); fetchSuggestionCount();
+  };
+  fetch(GAS_URL,{method:'POST',body:JSON.stringify({action:'saveSuggestion',name:name,content:content})})
+    .then(res=>res.json())
+    .then(res=>{
+      if(res.status==='success') finishOk('✅ 선생님께 건의사항이 잘 도착했습니다!');
+      else{isSendingSuggestion=false;setSuggestionSending(false);alert('❌ '+(res.message||'전송 실패. 다시 시도해 주세요.'));}
+    })
+    .catch(()=>{
+      // 응답을 못 읽어도 실제로는 저장된 경우가 많으므로 재전송 유도하지 않음
+      finishOk('✅ 건의사항이 전송되었습니다. (다시 누르지 않아도 돼요!)');
+    });
+}
+
+function openTeacherModal(){if(!checkTeacherPassword())return;document.getElementById('tStartDate').value=todayStr;document.getElementById('tEndDate').value=todayStr;document.getElementById('tNotice').value=window.currentRawNotice||'';document.getElementById('teacherModal').style.display='block';}
+function closeTeacherModal(){document.getElementById('teacherModal').style.display='none';}
+function addDaysStr(dateStr, days) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+// 기간 안의 날짜마다 기존 출결/숙제 내용은 그대로 두고 전달사항만 바꿔서 저장한다.
+async function saveTeacherNotice() {
+  const startDate = document.getElementById('tStartDate').value;
+  const endDate = document.getElementById('tEndDate').value;
+  const notice = document.getElementById('tNotice').value;
+  if (!startDate || !endDate) { alert('기간(시작일과 종료일)을 선택해주세요.'); return; }
+  if (endDate < startDate) { alert('종료일은 시작일보다 빠를 수 없습니다.'); return; }
+  const dates = [];
+  for (let d = startDate; d <= endDate; d = addDaysStr(d, 1)) dates.push(d);
+  if (dates.length > 62) { alert('한 번에 최대 62일까지만 저장할 수 있습니다.'); return; }
+  const btn = document.getElementById('tSaveBtn');
+  const originalText = btn.innerText;
+  btn.disabled = true;
+  let failed = 0;
+  try {
+    for (let i = 0; i < dates.length; i++) {
+      btn.innerText = '⏳ 저장 중... (' + (i + 1) + '/' + dates.length + ')';
+      try {
+        const data = await fetch(GAS_URL + '?action=getNotice&date=' + encodeURIComponent(dates[i])).then(res => res.json());
+        const res = await postJSON({
+          action: 'saveNotice',
+          date: dates[i],
+          notice: notice,
+          attendance: data.attendance || '',
+          homework: data.homework || ''
+        });
+        if (res && res.status && res.status !== 'success' && res.status !== 'unreachable') failed++;
+      } catch (err) {
+        failed++;
+      }
+    }
+  } finally {
+    btn.disabled = false;
+    btn.innerText = originalText;
+  }
+  if (failed) alert('⚠️ ' + dates.length + '일 중 ' + failed + '일은 저장하지 못했습니다. 다시 시도해주세요.');
+  else alert('✅ ' + formatPeriod(startDate, endDate) + ' 전달사항이 저장되었습니다!');
+  closeTeacherModal();
+  fetchNotice();
+}
+</script>
+</body>
+</html>
